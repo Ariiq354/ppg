@@ -12,6 +12,11 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
+  runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL,
+    databaseAuthToken: process.env.DATABASE_AUTH_TOKEN,
+  },
+
   security: {
     headers: {
       contentSecurityPolicy: {

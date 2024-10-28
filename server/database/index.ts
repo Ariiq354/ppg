@@ -2,9 +2,12 @@ import { drizzle } from "drizzle-orm/libsql";
 import * as auth from "./schema/auth";
 import * as tempat from "./schema/tempat";
 
+const config = useRuntimeConfig();
+
 export const db = drizzle({
   connection: {
-    url: "file:test.db",
+    url: config.databaseUrl as string,
+    authToken: config.databaseAuthToken as string,
   },
   schema: {
     ...auth,
