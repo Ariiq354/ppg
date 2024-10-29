@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     ) {
       throw createError({
         statusCode: 403,
+        statusMessage: "Unauthorized",
       });
     }
   }

@@ -7,6 +7,6 @@
 <template>
   <div>
     <Title>Home</Title>
-    <UCard> Ini dashboard </UCard>
+    <UCard>Ini dashboard</UCard>
   </div>
 </template>

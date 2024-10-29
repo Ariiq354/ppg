@@ -2,8 +2,6 @@
   import { z } from "zod";
   import type { FormSubmitEvent } from "#ui/types";
 
-  const { data: dataDaerah } = await useLazyFetch("/api/daerah");
-
   const modalOpen = defineModel<boolean>();
 
   const schema = z.object({
@@ -27,21 +25,38 @@
   });
 
   const state = ref(initialFormData());
+  const daerahId = computed(() => state.value.daerahId);
+  const desaId = computed(() => state.value.desaId);
 
-  watch(modalOpen, () => {
+  const { data: dataDaerah, execute: execDaerah } = await useFetch(
+    "/api/daerah",
+    {
+      immediate: false,
+    }
+  );
+  const { data: dataDesa, execute: execDesa } = await useFetch("/api/desa", {
+    query: {
+      daerahId: daerahId,
+    },
+    immediate: false,
+  });
+
+  const { data: dataKelompok, execute: execKelompok } = await useFetch(
+    "/api/kelompok",
+    {
+      query: {
+        desaId: desaId,
+      },
+      immediate: false,
+    }
+  );
+  watch(modalOpen, async () => {
     if (modalOpen.value === true) {
       state.value = initialFormData();
+      await execDaerah();
+      await execDesa();
+      await execKelompok();
     }
-  });
-  const { data: dataDesa } = await useLazyFetch("/api/desa", {
-    query: {
-      daerahId: state.value.daerahId,
-    },
-  });
-  const { data: dataKelompok } = await useLazyFetch("/api/kelompok", {
-    query: {
-      desaId: state.value.desaId,
-    },
   });
 
   const modalLoading = ref(false);
@@ -54,19 +69,15 @@
         body: event.data,
       });
 
-      modalOpen.value = false;
-      reloadNuxtApp();
+      reloadNuxtApp({ force: true });
     } catch (error: any) {
       useToastError(String(error.statusCode), error.statusMessage);
-    } finally {
-      modalLoading.value = false;
     }
   }
 </script>
 
 <template>
   <UModal v-model="modalOpen" :ui="{ width: 'sm:max-w-2xl' }" prevent-close>
-    {{ state }}
     <div class="px-4 py-5">
       <div class="mb-4 flex items-center justify-between">
         <h3
@@ -95,7 +106,11 @@
             </UFormGroup>
 
             <UFormGroup label="Password" name="password" class="w-full">
-              <UInput v-model="state.password" :disabled="modalLoading" />
+              <UInput
+                v-model="state.password"
+                :disabled="modalLoading"
+                type="password"
+              />
             </UFormGroup>
             <UFormGroup label="Nama Daerah" name="daerahId" class="w-full">
               <USelectMenu

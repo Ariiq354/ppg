@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const querySchema = z.object({
-  daerahId: z.number(),
+  daerahId: z.coerce.number(),
 });
 
 export default defineEventHandler(async (event) => {

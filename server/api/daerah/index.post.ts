@@ -10,13 +10,15 @@ export default defineEventHandler(async (event) => {
 
   const res = bodySchema.parse(formData);
 
+  res.name = res.name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
   if (res.id) {
     await updateDaerah(res.id, res);
   } else {
-    const newData = {
-      ...res,
-    };
-    await createDaerah(newData);
+    await createDaerah(res);
   }
 
   return;

@@ -11,17 +11,17 @@
   const items = [
     [
       {
-        label: "Keluar",
-        icon: "i-heroicons-arrow-left-on-rectangle",
-        click: () => {
-          props.logout();
-        },
-      },
-      {
         label: "Profil",
         icon: "i-heroicons-user",
         click: () => {
           modalOpen.value = true;
+        },
+      },
+      {
+        label: "Keluar",
+        icon: "i-heroicons-arrow-left-on-rectangle",
+        click: () => {
+          props.logout();
         },
       },
     ],

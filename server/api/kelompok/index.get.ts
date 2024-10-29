@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const querySchema = z.object({
-  desaId: z.number(),
+  desaId: z.coerce.number(),
 });
 
 export default defineEventHandler(async (event) => {

@@ -14,6 +14,16 @@
         },
       ],
     },
+    {
+      title: "Aplikasi",
+      items: [
+        {
+          title: "Daftar Wilayah",
+          link: "/dashboard/wilayah",
+          icon: "i-heroicons-map",
+        },
+      ],
+    },
   ];
 </script>
 
