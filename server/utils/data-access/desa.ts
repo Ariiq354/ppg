@@ -16,7 +16,10 @@ export async function getDesaByDaerah(daerahId: number) {
 }
 
 export async function createDesa(data: NewDesa) {
-  return await db.insert(desaTable).values(data);
+  return await db
+    .insert(desaTable)
+    .values(data)
+    .returning({ insertedId: desaTable.id });
 }
 
 export async function updateDesa(id: number, data: Partial<NewDesa>) {

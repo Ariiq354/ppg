@@ -19,7 +19,10 @@ export async function getKelompokByDesa(desaId: number) {
 }
 
 export async function createKelompok(data: NewKelompok) {
-  return await db.insert(kelompokTable).values(data);
+  return await db
+    .insert(kelompokTable)
+    .values(data)
+    .returning({ insertedId: kelompokTable.id });
 }
 
 export async function updateKelompok(id: number, data: Partial<NewKelompok>) {

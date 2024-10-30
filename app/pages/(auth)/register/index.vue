@@ -1,19 +1,74 @@
 <script setup lang="ts">
   import type { FormSubmitEvent } from "#ui/types";
-  import { type Schema, getInitialState, loginSchema } from "./_constants";
+  import {
+    type Schema,
+    getInitialState,
+    registerSchema as beforeSchema,
+  } from "./_constants";
 
   definePageMeta({
     layout: "auth",
   });
 
-  const { data } = await useFetch("/api/daerah");
+  const registerSchema = beforeSchema
+    .refine(
+      (data) => {
+        if (adminDesa.value) {
+          return data.desa.name !== undefined;
+        }
+        return true;
+      },
+      {
+        message: "Required",
+        path: ["desa"],
+      }
+    )
+    .refine(
+      (data) => {
+        if (adminKelompok.value) {
+          return data.kelompok.name !== undefined;
+        }
+        return true;
+      },
+      {
+        message: "Required",
+        path: ["kelompok"],
+      }
+    );
 
   const state = ref(getInitialState());
+
+  const daerahId = computed(() => state.value.daerah?.id);
+  const desaId = computed(() => state.value.desa?.id);
   const modalOpen = ref(false);
-  const registerResult = ref();
+  const adminDesa = ref(false);
+  const adminKelompok = ref(false);
+  watch(adminDesa, () => {
+    if (!adminDesa.value) {
+      adminKelompok.value = false;
+      state.value.desa = undefined;
+      state.value.kelompok = undefined;
+    }
+  });
+  const { data: dataDaerah } = await useFetch("/api/daerah");
+  const { data: dataDesa } = await useFetch("/api/desa", {
+    query: {
+      daerahId,
+    },
+    immediate: false,
+  });
+  const { data: dataKelompok } = await useFetch("/api/kelompok", {
+    query: {
+      desaId,
+    },
+    immediate: false,
+  });
 
   const isLoading = ref(false);
+  const registerResult = ref();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
+    console.log("check");
+
     try {
       isLoading.value = true;
       const data = await $fetch("/api/auth/register", {
@@ -24,7 +79,7 @@
       registerResult.value = data;
       modalOpen.value = true;
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusMessage);
+      useToastError(String(error.statusCode), error.statusText);
     } finally {
       isLoading.value = false;
     }
@@ -66,21 +121,72 @@
           </div>
         </div>
         <UForm
-          :schema="loginSchema"
+          :schema="registerSchema"
           :state="state"
           class="w-full space-y-6"
           :validate-on="['submit']"
           @submit="onSubmit"
         >
-          <UFormGroup label="Daerah" name="name">
+          <UFormGroup label="Nama Daerah" name="daerah.name">
             <USelectMenu
-              v-model="state"
+              v-model="state.daerah"
               placeholder="Masukkan nama daerah"
-              :options="data"
+              searchable-placeholder="Cari / Masukkan nama daerah"
+              :options="dataDaerah"
               option-attribute="name"
               searchable
               creatable
-            />
+            >
+              <template #empty> Opsi tidak ada </template>
+            </USelectMenu>
+          </UFormGroup>
+
+          <UCheckbox v-model="adminDesa" label="Masuk sebagai admin desa" />
+
+          <UFormGroup v-if="adminDesa" label="Nama Desa" name="desa">
+            <USelectMenu
+              v-model="state.desa"
+              placeholder="Masukkan nama desa"
+              searchable-placeholder="Cari / Masukkan nama desa"
+              :options="dataDesa"
+              option-attribute="name"
+              searchable
+              creatable
+            >
+              <template #option-create="{ option }">
+                <span class="flex-shrink-0">Buat Desa:</span>
+                <span class="block truncate">{{ option.name }}</span>
+              </template>
+              <template #empty> Opsi tidak ada </template>
+            </USelectMenu>
+          </UFormGroup>
+
+          <UCheckbox
+            v-if="adminDesa"
+            v-model="adminKelompok"
+            label="Masuk sebagai admin kelompok"
+          />
+
+          <UFormGroup
+            v-if="adminKelompok"
+            label="Nama Kelompok"
+            name="kelompok"
+          >
+            <USelectMenu
+              v-model="state.kelompok"
+              placeholder="Masukkan nama kelompok"
+              searchable-placeholder="Cari / Masukkan nama kelompok"
+              :options="dataKelompok"
+              option-attribute="name"
+              searchable
+              creatable
+            >
+              <template #option-create="{ option }">
+                <span class="flex-shrink-0">Buat Kelompok:</span>
+                <span class="block truncate">{{ option.name }}</span>
+              </template>
+              <template #empty> Opsi tidak ada </template>
+            </USelectMenu>
           </UFormGroup>
 
           <UButton

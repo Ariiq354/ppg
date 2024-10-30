@@ -50,7 +50,7 @@
         await refreshKelompok();
       }
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusMessage);
+      useToastError(String(error.statusCode), error.statusText);
     } finally {
       modalLoading.value = false;
     }
@@ -142,7 +142,7 @@
           <div class="mb-2 flex items-center justify-between">
             <h1 class="text-xl">Desa</h1>
             <UButton
-              v-if="daerahId === user?.daerahId"
+              v-if="daerahId === user?.daerahId && user?.role! < 3"
               color="gray"
               variant="ghost"
               size="xs"
@@ -179,7 +179,7 @@
           <div class="mb-2 flex items-center justify-between">
             <h1 class="text-xl">Kelompok</h1>
             <UButton
-              v-if="desaId === user?.desaId"
+              v-if="desaId === user?.desaId && user?.role! < 4"
               color="gray"
               variant="ghost"
               size="xs"

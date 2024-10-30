@@ -50,6 +50,7 @@
       immediate: false,
     }
   );
+
   watch(modalOpen, async () => {
     if (modalOpen.value === true) {
       state.value = initialFormData();
@@ -71,7 +72,7 @@
 
       reloadNuxtApp({ force: true });
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusMessage);
+      useToastError(String(error.statusCode), error.statusText);
     }
   }
 </script>

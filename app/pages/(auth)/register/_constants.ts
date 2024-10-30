@@ -1,13 +1,33 @@
 import { z } from "zod";
 
-export const loginSchema = z.object({
-  id: z.coerce.number().optional(),
-  name: z.string().min(1, "Required"),
+export const registerSchema = z.object({
+  daerah: z.object({
+    id: z.coerce.number().optional(),
+    name: z.string().min(1, "Required"),
+  }),
+  desa: z.object({
+    id: z.coerce.number().optional(),
+    name: z.string().optional(),
+  }),
+  kelompok: z.object({
+    id: z.coerce.number().optional(),
+    name: z.string().optional(),
+  }),
 });
 
-export const getInitialState = () => ({
-  id: undefined,
-  name: "",
-});
+export type Schema = z.output<typeof registerSchema>;
 
-export type Schema = z.output<typeof loginSchema>;
+export const getInitialState = (): Partial<Schema> => ({
+  daerah: {
+    id: undefined,
+    name: "",
+  },
+  desa: {
+    id: undefined,
+    name: undefined,
+  },
+  kelompok: {
+    id: undefined,
+    name: undefined,
+  },
+});

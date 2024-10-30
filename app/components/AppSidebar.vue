@@ -22,6 +22,16 @@
           link: "/dashboard/wilayah",
           icon: "i-heroicons-map",
         },
+        {
+          title: "Tenaga Pengajar",
+          link: "/dashboard/pengajar",
+          icon: "i-heroicons-map",
+        },
+        {
+          title: "Generus",
+          link: "/dashboard/generus",
+          icon: "i-heroicons-map",
+        },
       ],
     },
   ];

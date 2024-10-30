@@ -15,7 +15,7 @@
       user.value = null;
       await navigateTo("/");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusMessage);
+      useToastError(String(error.statusCode), error.statusText);
     }
   }
 </script>

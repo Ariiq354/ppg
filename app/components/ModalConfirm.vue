@@ -14,7 +14,7 @@
       await props.function();
       emit("success");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusMessage);
+      useToastError(String(error.statusCode), error.statusText);
     } finally {
       loading.value = false;
     }

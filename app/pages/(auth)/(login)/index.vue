@@ -8,6 +8,12 @@
 
   const state = ref(getInitialState());
 
+  const error = useError();
+
+  watch(error, () => {
+    console.log(error, "check");
+  });
+
   const isLoading = ref(false);
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     try {
@@ -18,7 +24,7 @@
       });
       await navigateTo("/dashboard");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusMessage);
+      useToastError(String(error.statusCode), error.data.message);
     } finally {
       isLoading.value = false;
     }

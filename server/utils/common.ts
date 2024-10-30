@@ -4,7 +4,7 @@ export function protectFunction(event: H3Event) {
   if (!event.context.session) {
     throw createError({
       statusCode: 401,
-      statusMessage: "Unauthenticated",
+      statusText: "Unauthenticated",
     });
   }
 }
@@ -13,14 +13,14 @@ export function adminFunction(event: H3Event) {
   if (!event.context.session) {
     throw createError({
       statusCode: 401,
-      statusMessage: "Unauthenticated",
+      statusText: "Unauthenticated",
     });
   }
 
   if (event.context.user?.role !== 1) {
     throw createError({
       statusCode: 403,
-      statusMessage: "Unauthorized",
+      statusText: "Unauthorized",
     });
   }
 }
