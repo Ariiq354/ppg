@@ -3,7 +3,7 @@ import { z } from "zod";
 export const columns = [
   {
     key: "nama",
-    label: "Nama Pengajar",
+    label: "Nama Generus",
     sortable: true,
   },
   {
@@ -11,12 +11,12 @@ export const columns = [
     label: "Jenis Kelamin",
   },
   {
-    key: "pendidikan",
-    label: "Pendidikan",
+    key: "kelasPengajian",
+    label: "Kelas Pengajian",
   },
   {
-    key: "status",
-    label: "Status",
+    key: "namaOrtu",
+    label: "Nama orang tua",
   },
 ];
 
@@ -25,12 +25,11 @@ export const schema = z.object({
   foto: z.string(),
   gender: z.string(),
   nama: z.string(),
-  noTelepon: z.string(),
-  pendidikan: z.string(),
-  status: z.string(),
+  kelasPengajian: z.string(),
+  kelasSekolah: z.string(),
+  namaOrtu: z.string(),
   tanggalLahir: z.string(),
   tempatLahir: z.string(),
-  tanggalTugas: z.string(),
   daerahId: z.number().nullable(),
   desaId: z.number().nullable(),
   kelompokId: z.number().nullable(),
@@ -41,15 +40,14 @@ export const getInitialFormData = (): Partial<Schema> => ({
   foto: undefined,
   gender: undefined,
   nama: undefined,
-  noTelepon: undefined,
-  pendidikan: undefined,
-  status: undefined,
-  tanggalLahir: undefined,
-  tempatLahir: undefined,
-  tanggalTugas: undefined,
   daerahId: undefined,
   desaId: undefined,
+  kelasPengajian: undefined,
+  kelasSekolah: undefined,
   kelompokId: undefined,
+  namaOrtu: undefined,
+  tanggalLahir: undefined,
+  tempatLahir: undefined,
 });
 
 export type Schema = z.output<typeof schema>;

@@ -8,6 +8,12 @@ export async function getAllDesa() {
   });
 }
 
+export async function getDesaById(id: number) {
+  return await db.query.desaTable.findFirst({
+    where: eq(desaTable.id, id),
+  });
+}
+
 export async function getDesaByDaerah(daerahId: number) {
   return await db.query.desaTable.findMany({
     where: eq(desaTable.daerahId, daerahId),

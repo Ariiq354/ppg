@@ -8,6 +8,12 @@ export async function getAllDaerah() {
   });
 }
 
+export async function getDaerahById(id: number) {
+  return await db.query.daerahTable.findFirst({
+    where: eq(daerahTable.id, id),
+  });
+}
+
 export async function createDaerah(data: NewDaerah) {
   return await db
     .insert(daerahTable)

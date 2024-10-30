@@ -3,60 +3,31 @@
   import type { FormSubmitEvent } from "#ui/types";
 
   const modalOpen = defineModel<boolean>();
+  const user = useUser();
+
+  const { data: dataDaerah } = await useFetch(
+    `/api/daerah/${user.value?.daerahId}`
+  );
+  const { data: dataDesa } = await useFetch(`/api/desa/${user.value?.desaId}`);
+  const { data: dataKelompok } = await useFetch(
+    `/api/kelompok/${user.value?.kelompokId}`
+  );
 
   const schema = z.object({
-    username: z.string().min(1, "Required"),
-    password: z.string().optional(),
-    daerahId: z.coerce.number().optional(),
-    desaId: z.coerce.number().optional(),
-    kelompokId: z.coerce.number().optional(),
+    password: z.string(),
   });
 
   type Schema = z.output<typeof schema>;
 
-  const user = useUser();
-
   const initialFormData = () => ({
-    username: user.value?.username,
     password: undefined,
-    daerahId: user.value?.daerahId ? user.value.daerahId : undefined,
-    desaId: user.value?.desaId ? user.value.desaId : undefined,
-    kelompokId: user.value?.kelompokId ? user.value.kelompokId : undefined,
   });
 
   const state = ref(initialFormData());
-  const daerahId = computed(() => state.value.daerahId);
-  const desaId = computed(() => state.value.desaId);
-
-  const { data: dataDaerah, execute: execDaerah } = await useFetch(
-    "/api/daerah",
-    {
-      immediate: false,
-    }
-  );
-  const { data: dataDesa, execute: execDesa } = await useFetch("/api/desa", {
-    query: {
-      daerahId: daerahId,
-    },
-    immediate: false,
-  });
-
-  const { data: dataKelompok, execute: execKelompok } = await useFetch(
-    "/api/kelompok",
-    {
-      query: {
-        desaId: desaId,
-      },
-      immediate: false,
-    }
-  );
 
   watch(modalOpen, async () => {
     if (modalOpen.value === true) {
       state.value = initialFormData();
-      await execDaerah();
-      await execDesa();
-      await execKelompok();
     }
   });
 
@@ -64,15 +35,16 @@
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     try {
       modalLoading.value = true;
-
       await $fetch("/api/user/edit", {
         method: "POST",
         body: event.data,
       });
 
-      reloadNuxtApp({ force: true });
+      modalOpen.value = false;
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusText);
+      useToastError(String(error.statusCode), error.data.message);
+    } finally {
+      modalLoading.value = false;
     }
   }
 </script>
@@ -102,8 +74,8 @@
       >
         <div class="flex gap-4">
           <div class="flex w-full flex-col gap-4">
-            <UFormGroup label="Username" name="username" class="w-full">
-              <UInput v-model="state.username" :disabled="modalLoading" />
+            <UFormGroup label="Username" class="w-full">
+              <UInput :model-value="user?.username" disabled />
             </UFormGroup>
 
             <UFormGroup label="Password" name="password" class="w-full">
@@ -113,35 +85,14 @@
                 type="password"
               />
             </UFormGroup>
-            <UFormGroup label="Nama Daerah" name="daerahId" class="w-full">
-              <USelectMenu
-                v-model="state.daerahId"
-                :options="dataDaerah"
-                :disabled="modalLoading"
-                option-attribute="name"
-                value-attribute="id"
-                searchable
-              />
+            <UFormGroup label="Nama Daerah" class="w-full">
+              <UInput :model-value="dataDaerah?.name" disabled />
             </UFormGroup>
-            <UFormGroup label="Nama Desa" name="desaId" class="w-full">
-              <USelectMenu
-                v-model="state.desaId"
-                :options="dataDesa"
-                :disabled="modalLoading"
-                option-attribute="name"
-                value-attribute="id"
-                searchable
-              />
+            <UFormGroup label="Nama Desa" class="w-full">
+              <UInput :model-value="dataDesa?.name" disabled />
             </UFormGroup>
-            <UFormGroup label="Nama Kelompok" name="kelompokId" class="w-full">
-              <USelectMenu
-                v-model="state.kelompokId"
-                :options="dataKelompok"
-                :disabled="modalLoading"
-                option-attribute="name"
-                value-attribute="id"
-                searchable
-              />
+            <UFormGroup label="Nama Kelompok" class="w-full">
+              <UInput :model-value="dataKelompok?.name" disabled />
             </UFormGroup>
           </div>
         </div>

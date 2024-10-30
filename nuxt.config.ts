@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxt/eslint",
     "@nuxt/image",
-    "@formkit/auto-animate/nuxt",
   ],
   future: {
     compatibilityVersion: 4,
@@ -28,10 +27,6 @@ export default defineNuxtConfig({
         ],
       },
     },
-  },
-
-  icon: {
-    serverBundle: "local",
   },
 
   ignorePrefix: "_",

@@ -2,11 +2,7 @@ import { hash } from "@node-rs/argon2";
 import { z } from "zod";
 
 const bodySchema = z.object({
-  username: z.string(),
-  password: z.string().optional(),
-  daerahId: z.number().optional(),
-  desaId: z.number().optional(),
-  kelompokId: z.number().optional(),
+  password: z.string(),
 });
 
 export default defineEventHandler(async (event) => {

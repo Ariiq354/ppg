@@ -2,6 +2,10 @@
   import type { FormSubmitEvent } from "#ui/types";
   import { initialFormData, schema, type Schema } from "./_constants";
 
+  onMounted(() => {
+    defineTopbarTitle("Daftar Wilayah");
+  });
+
   const user = useUser();
 
   const daerahId = ref();
@@ -57,7 +61,7 @@
         await refreshDaerah();
       }
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusText);
+      useToastError(String(error.statusCode), error.data.message);
     } finally {
       modalLoading.value = false;
     }
@@ -245,10 +249,10 @@
             <UIcon
               v-if="
                 kelompokId === item.id &&
-                (user?.role! < 2 || kelompokId === user?.desaId)
+                (user?.role! < 2 || kelompokId === user?.kelompokId)
               "
               name="i-heroicons-pencil"
-              @click.stop="openEditModal('desa', item.id, item.name)"
+              @click.stop="openEditModal('kelompok', item.id, item.name)"
             />
           </div>
         </div>

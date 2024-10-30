@@ -16,8 +16,6 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@formkit/auto-animate": "^0.8.2",
-    "@iconify-json/heroicons": "^1.2.1",
     "@libsql/client": "^0.14.0",
     "@node-rs/argon2": "^2.0.0",
     "@nuxt/fonts": "^0.10.2",

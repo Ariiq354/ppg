@@ -1,6 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { timestamp } from "./common";
+import { daerahTable, desaTable, kelompokTable } from "./tempat";
 
 export const pengajarTable = sqliteTable("pengajar", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -13,6 +14,11 @@ export const pengajarTable = sqliteTable("pengajar", {
   tanggalTugas: text().notNull(),
   noTelepon: text().notNull(),
   foto: text().notNull(),
+  daerahId: int().references(() => daerahTable.id, { onDelete: "set null" }),
+  desaId: int().references(() => desaTable.id, { onDelete: "set null" }),
+  kelompokId: int().references(() => kelompokTable.id, {
+    onDelete: "set null",
+  }),
   ...timestamp,
 });
 
@@ -26,6 +32,11 @@ export const generusTable = sqliteTable("generus", {
   kelasSekolah: text().notNull(),
   kelasPengajian: text().notNull(),
   foto: text().notNull(),
+  daerahId: int().references(() => daerahTable.id, { onDelete: "set null" }),
+  desaId: int().references(() => desaTable.id, { onDelete: "set null" }),
+  kelompokId: int().references(() => kelompokTable.id, {
+    onDelete: "set null",
+  }),
   ...timestamp,
 });
 

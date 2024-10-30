@@ -67,8 +67,6 @@
   const isLoading = ref(false);
   const registerResult = ref();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
-    console.log("check");
-
     try {
       isLoading.value = true;
       const data = await $fetch("/api/auth/register", {
@@ -79,7 +77,7 @@
       registerResult.value = data;
       modalOpen.value = true;
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.statusText);
+      useToastError("Register gagal", error.data.message);
     } finally {
       isLoading.value = false;
     }
@@ -136,12 +134,16 @@
               option-attribute="name"
               searchable
               creatable
+              @change="
+                state.desa = {};
+                state.kelompok = {};
+              "
             >
               <template #empty> Opsi tidak ada </template>
             </USelectMenu>
           </UFormGroup>
 
-          <UCheckbox v-model="adminDesa" label="Masuk sebagai admin desa" />
+          <UCheckbox v-model="adminDesa" label="Daftar sebagai admin desa" />
 
           <UFormGroup v-if="adminDesa" label="Nama Desa" name="desa">
             <USelectMenu
@@ -152,6 +154,7 @@
               option-attribute="name"
               searchable
               creatable
+              @change="state.kelompok = {}"
             >
               <template #option-create="{ option }">
                 <span class="flex-shrink-0">Buat Desa:</span>
@@ -164,7 +167,7 @@
           <UCheckbox
             v-if="adminDesa"
             v-model="adminKelompok"
-            label="Masuk sebagai admin kelompok"
+            label="Daftar sebagai admin kelompok"
           />
 
           <UFormGroup

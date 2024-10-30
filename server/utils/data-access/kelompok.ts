@@ -11,6 +11,12 @@ export async function getAllKelompok() {
   });
 }
 
+export async function getKelompokById(id: number) {
+  return await db.query.kelompokTable.findFirst({
+    where: eq(kelompokTable.id, id),
+  });
+}
+
 export async function getKelompokByDesa(desaId: number) {
   return await db.query.kelompokTable.findMany({
     where: eq(kelompokTable.desaId, desaId),
