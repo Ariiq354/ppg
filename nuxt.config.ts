@@ -34,5 +34,5 @@ export default defineNuxtConfig({
     serverBundle: "local",
   },
 
-  ignorePrefix: process.env.NODE_ENV === "development" ? "_" : "-",
+  ignorePrefix: "_",
 });

@@ -6,11 +6,13 @@
 
   const daerahId = ref();
   const desaId = ref();
+  const kelompokId = ref();
   const modalOpen = ref(false);
   const statusModal = ref("desa");
   const modalLoading = ref(false);
 
-  const { data: daerahData } = await useFetch("/api/daerah");
+  const { data: daerahData, refresh: refreshDaerah } =
+    await useFetch("/api/daerah");
   const { data: desaData, refresh: refreshDesa } = await useFetch("/api/desa", {
     query: {
       daerahId: daerahId,
@@ -33,10 +35,13 @@
     try {
       modalLoading.value = true;
       const body = {
+        id: event.data.id,
         name: event.data.name,
         ...(statusModal.value === "desa"
           ? { daerahId: daerahId.value }
-          : { desaId: desaId.value }),
+          : statusModal.value === "kelompok"
+            ? { desaId: desaId.value }
+            : undefined),
       };
       await $fetch(`/api/${statusModal.value}`, {
         method: "POST",
@@ -44,10 +49,12 @@
       });
 
       modalOpen.value = false;
-      if (statusModal.value === "desa") {
+      if (statusModal.value === "kelompok") {
+        await refreshKelompok();
+      } else if (statusModal.value === "desa") {
         await refreshDesa();
       } else {
-        await refreshKelompok();
+        await refreshDaerah();
       }
     } catch (error: any) {
       useToastError(String(error.statusCode), error.statusText);
@@ -55,11 +62,23 @@
       modalLoading.value = false;
     }
   }
+
+  function openAddModal(title: string) {
+    modalOpen.value = true;
+    state.value = initialFormData();
+    statusModal.value = title;
+  }
+
+  function openEditModal(title: string, id: number, name: string) {
+    modalOpen.value = true;
+    state.value.id = id;
+    state.value.name = name;
+    statusModal.value = title;
+  }
 </script>
 
 <template>
   <main>
-    desaData:{{ desaData }}
     <UModal v-model="modalOpen">
       <div class="px-4 py-5">
         <div class="mb-4 flex items-center justify-between">
@@ -109,8 +128,6 @@
         </UForm>
       </div>
     </UModal>
-    <div>daerahId: {{ daerahId }}</div>
-    <div>desaId: {{ desaId }}</div>
     <Title>Wilayah</Title>
     <UCard>
       <h1 class="mb-4 text-xl font-bold">Detail Wilayah</h1>
@@ -118,22 +135,39 @@
         <div
           class="flex flex-col gap-1 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
         >
-          <h1 class="mb-2 text-xl">Daerah</h1>
+          <div class="mb-2 flex items-center justify-between">
+            <h1 class="text-xl">Daerah</h1>
+            <UButton
+              v-if="user?.role! < 2"
+              color="gray"
+              variant="ghost"
+              size="xs"
+              icon="i-heroicons-plus"
+              class="rounded-full"
+              @click="openAddModal('daerah')"
+            />
+          </div>
           <div
             v-for="item in daerahData"
             :key="item.id"
-            class="cursor-pointer rounded-md border-gray-200 p-2 dark:border-gray-700"
+            class="flex cursor-pointer items-center justify-between rounded-md border-gray-200 p-2 dark:border-gray-700"
             :class="{
               'border shadow-lg dark:bg-white/5': daerahId === item.id,
             }"
             @click="
-              () => {
+              {
                 daerahId = item.id;
                 desaId = undefined;
+                kelompokId = undefined;
               }
             "
           >
             {{ item.name }}
+            <UIcon
+              v-if="daerahId === item.id && user?.role! < 2"
+              name="i-heroicons-pencil"
+              @click.stop="openEditModal('daerah', item.id, item.name)"
+            />
           </div>
         </div>
         <div
@@ -142,35 +176,41 @@
           <div class="mb-2 flex items-center justify-between">
             <h1 class="text-xl">Desa</h1>
             <UButton
-              v-if="daerahId === user?.daerahId && user?.role! < 3"
+              v-if="
+                daerahId &&
+                (user?.role! < 2 ||
+                  (daerahId === user?.daerahId && user?.role! < 3))
+              "
               color="gray"
               variant="ghost"
               size="xs"
               icon="i-heroicons-plus"
               class="rounded-full"
-              @click="
-                () => {
-                  modalOpen = true;
-                  state = initialFormData();
-                  statusModal = 'desa';
-                }
-              "
+              @click="openAddModal('desa')"
             />
           </div>
           <div
             v-for="item in desaData"
             :key="item.id"
-            class="cursor-pointer rounded-md border-gray-200 p-2 dark:border-gray-700"
-            :class="{
-              'border shadow-lg dark:bg-white/5': desaId === item.id,
-            }"
+            class="flex cursor-pointer items-center justify-between rounded-md border-gray-200 p-2 dark:border-gray-700"
+            :class="{ 'border shadow-lg dark:bg-white/5': desaId === item.id }"
             @click="
-              () => {
+              {
                 desaId = item.id;
+                kelompokId = undefined;
               }
             "
           >
             {{ item.name }}
+            <UIcon
+              v-if="
+                desaId === item.id &&
+                (user?.role! < 2 ||
+                  (desaId === user?.desaId && user?.role! < 3))
+              "
+              name="i-heroicons-pencil"
+              @click.stop="openEditModal('desa', item.id, item.name)"
+            />
           </div>
         </div>
         <div
@@ -179,27 +219,37 @@
           <div class="mb-2 flex items-center justify-between">
             <h1 class="text-xl">Kelompok</h1>
             <UButton
-              v-if="desaId === user?.desaId && user?.role! < 4"
+              v-if="
+                desaId &&
+                (user?.role! < 2 ||
+                  (desaId === user?.desaId && user?.role! < 4))
+              "
               color="gray"
               variant="ghost"
               size="xs"
               icon="i-heroicons-plus"
               class="rounded-full"
-              @click="
-                () => {
-                  modalOpen = true;
-                  state = initialFormData();
-                  statusModal = 'kelompok';
-                }
-              "
+              @click="openAddModal('kelompok')"
             />
           </div>
           <div
             v-for="item in kelompokData"
             :key="item.id"
-            class="rounded-md border-gray-200 p-2 dark:border-gray-700"
+            class="flex cursor-pointer items-center justify-between rounded-md border-gray-200 p-2 dark:border-gray-700"
+            :class="{
+              'border shadow-lg dark:bg-white/5': kelompokId === item.id,
+            }"
+            @click="kelompokId = item.id"
           >
             {{ item.name }}
+            <UIcon
+              v-if="
+                kelompokId === item.id &&
+                (user?.role! < 2 || kelompokId === user?.desaId)
+              "
+              name="i-heroicons-pencil"
+              @click.stop="openEditModal('desa', item.id, item.name)"
+            />
           </div>
         </div>
       </div>

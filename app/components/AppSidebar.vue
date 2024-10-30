@@ -25,12 +25,12 @@
         {
           title: "Tenaga Pengajar",
           link: "/dashboard/pengajar",
-          icon: "i-heroicons-map",
+          icon: "i-heroicons-users",
         },
         {
           title: "Generus",
           link: "/dashboard/generus",
-          icon: "i-heroicons-map",
+          icon: "i-heroicons-user-group",
         },
       ],
     },

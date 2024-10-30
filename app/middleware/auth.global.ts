@@ -11,7 +11,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!data && currentRoute.includes("/dashboard")) {
     throw createError({
       statusCode: 401,
-      statusText: "Unauthenticated",
     });
   }
 });

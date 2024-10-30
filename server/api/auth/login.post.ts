@@ -4,7 +4,7 @@ import { z } from "zod";
 const loginSchema = z
   .object({
     username: z.string(),
-    password: z.string().min(8),
+    password: z.string(),
     rememberMe: z.boolean(),
   })
   .strict();
@@ -18,8 +18,8 @@ export default eventHandler(async (event) => {
 
   if (!existingUser) {
     throw createError({
-      statusCode: 400,
-      statusMessage: "Username atau password salah",
+      statusCode: 401,
+      message: "Username atau password salah",
     });
   }
 
@@ -27,8 +27,8 @@ export default eventHandler(async (event) => {
 
   if (!validPassword) {
     throw createError({
-      statusCode: 400,
-      statusMessage: "Username atau password salah",
+      statusCode: 401,
+      message: "Username atau password salah",
     });
   }
 

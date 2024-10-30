@@ -117,7 +117,7 @@ function convertToNameFormat(input: string) {
   ];
 
   return input
-    .replace(/\d/g, (digit) => numberWords[parseInt(digit)]) // Convert digits to words
-    .replace(/\s+/g, "") // Remove all spaces
-    .toLowerCase(); // Convert to lowercase
+    .replace(/\d/g, (digit) => numberWords[parseInt(digit)])
+    .replace(/\s+/g, "")
+    .toLowerCase();
 }
