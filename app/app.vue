@@ -1,3 +1,15 @@
+<script setup lang="ts">
+  useSeoMeta({
+    description: "Web PPG",
+  });
+
+  useHead({
+    htmlAttrs: {
+      lang: "id",
+    },
+  });
+</script>
+
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-black">
     <NuxtRouteAnnouncer />
