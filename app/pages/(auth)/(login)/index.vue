@@ -24,7 +24,7 @@
       });
       await navigateTo("/dashboard");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.data.message);
+      useToastError(String(error.statusCode), error.data.statusMessage);
     } finally {
       isLoading.value = false;
     }

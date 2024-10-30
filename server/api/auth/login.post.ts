@@ -19,10 +19,7 @@ export default eventHandler(async (event) => {
   if (!existingUser) {
     throw createError({
       statusCode: 400,
-      message: "Username atau password salah",
-      data: {
-        message: "Username atau password salah",
-      },
+      statusMessage: "Username atau password salah",
     });
   }
 
@@ -31,10 +28,7 @@ export default eventHandler(async (event) => {
   if (!validPassword) {
     throw createError({
       statusCode: 400,
-      message: "Username atau password salah",
-      data: {
-        message: "Username atau password salah",
-      },
+      statusMessage: "Username atau password salah",
     });
   }
 
