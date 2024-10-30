@@ -30,7 +30,7 @@
     <UCard class="w-full max-w-md">
       <div class="space-y-6">
         <div class="flex flex-col items-center text-center">
-          <NuxtImg src="/ppg.webp" width="200" height="200" />
+          <NuxtImg src="/ppg.webp" width="200" height="200" alt="logo ppg" />
           <div class="text-2xl font-bold text-gray-900 dark:text-white">
             Selamat Datang!
           </div>
