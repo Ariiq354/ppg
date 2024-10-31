@@ -11,12 +11,50 @@ export const columns = [
     label: "Jenis Kelamin",
   },
   {
+    key: "kelasSekolah",
+    label: "Kelas Sekolah",
+  },
+  {
     key: "kelasPengajian",
     label: "Kelas Pengajian",
   },
   {
-    key: "namaOrtu",
-    label: "Nama orang tua",
+    key: "namaKelompok",
+    label: "Kelompok",
+  },
+];
+
+export const genderOptions = [
+  {
+    value: "laki",
+    name: "Laki - laki",
+  },
+  {
+    value: "perempuan",
+    name: "Perempuan",
+  },
+];
+
+export const pengajianOptions = [
+  {
+    value: "paud",
+    name: "PAUD",
+  },
+  {
+    value: "caberawit",
+    name: "Cabe Rawit",
+  },
+  {
+    value: "praremaja",
+    name: "Pra Remaja",
+  },
+  {
+    value: "remaja",
+    name: "Remaja",
+  },
+  {
+    value: "pranikah",
+    name: "Pra Nikah",
   },
 ];
 
@@ -37,17 +75,17 @@ export const schema = z.object({
 
 export const getInitialFormData = (): Partial<Schema> => ({
   id: undefined,
-  foto: undefined,
-  gender: undefined,
   nama: undefined,
+  gender: undefined,
+  kelasSekolah: undefined,
+  kelasPengajian: undefined,
+  namaOrtu: undefined,
+  tempatLahir: undefined,
+  tanggalLahir: undefined,
+  foto: "",
   daerahId: undefined,
   desaId: undefined,
-  kelasPengajian: undefined,
-  kelasSekolah: undefined,
   kelompokId: undefined,
-  namaOrtu: undefined,
-  tanggalLahir: undefined,
-  tempatLahir: undefined,
 });
 
 export type Schema = z.output<typeof schema>;

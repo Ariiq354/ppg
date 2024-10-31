@@ -8,6 +8,9 @@ import {
 export async function getAllPengajar() {
   return await db.query.pengajarTable.findMany({
     orderBy: desc(pengajarTable.createdAt),
+    with: {
+      kelompok: true,
+    },
   });
 }
 
@@ -15,6 +18,9 @@ export async function getPengajarByDaerah(daerahId: number) {
   return await db.query.pengajarTable.findMany({
     where: eq(pengajarTable.daerahId, daerahId),
     orderBy: desc(pengajarTable.createdAt),
+    with: {
+      kelompok: true,
+    },
   });
 }
 

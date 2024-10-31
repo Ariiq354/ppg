@@ -139,6 +139,10 @@
                 state.kelompok = {};
               "
             >
+              <template #option-create="{ option }">
+                <span class="flex-shrink-0">Buat Daerah:</span>
+                <span class="block truncate">{{ option.name }}</span>
+              </template>
               <template #empty> Opsi tidak ada </template>
             </USelectMenu>
           </UFormGroup>

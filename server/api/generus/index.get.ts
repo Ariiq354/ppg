@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
       daerahId: item.daerahId,
       desaId: item.desaId,
       kelompokId: item.kelompokId,
+      namaKelompok: item.kelompok?.name,
     };
   });
 

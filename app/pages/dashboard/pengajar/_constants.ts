@@ -7,16 +7,46 @@ export const columns = [
     sortable: true,
   },
   {
-    key: "gender",
-    label: "Jenis Kelamin",
+    key: "namaKelompok",
+    label: "Tempat Tugas",
   },
   {
-    key: "pendidikan",
-    label: "Pendidikan",
+    key: "tanggalTugas",
+    label: "Tanggal Mulai tugas",
   },
   {
     key: "status",
     label: "Status",
+  },
+  {
+    key: "gender",
+    label: "Jenis Kelamin",
+  },
+];
+
+export const genderOptions = [
+  {
+    value: "laki",
+    name: "Laki - laki",
+  },
+  {
+    value: "perempuan",
+    name: "Perempuan",
+  },
+];
+
+export const statusOptions = [
+  {
+    value: "mt",
+    name: "Mubalig Tugasan",
+  },
+  {
+    value: "ms",
+    name: "Mubalig Setempat",
+  },
+  {
+    value: "asisten",
+    name: "Asisten Pengajar",
   },
 ];
 
@@ -38,15 +68,15 @@ export const schema = z.object({
 
 export const getInitialFormData = (): Partial<Schema> => ({
   id: undefined,
-  foto: undefined,
-  gender: undefined,
   nama: undefined,
+  gender: undefined,
   noTelepon: undefined,
   pendidikan: undefined,
   status: undefined,
   tanggalLahir: undefined,
   tempatLahir: undefined,
   tanggalTugas: undefined,
+  foto: "",
   daerahId: undefined,
   desaId: undefined,
   kelompokId: undefined,

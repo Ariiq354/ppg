@@ -2,8 +2,10 @@
   import type { FormSubmitEvent } from "#ui/types";
   import {
     columns,
+    genderOptions,
     getInitialFormData,
     schema,
+    statusOptions,
     type Schema,
   } from "./_constants";
   import { json2Csv } from "#imports";
@@ -12,11 +14,25 @@
     defineTopbarTitle("Tenaga Pengajar");
   });
 
-  const { data, status, refresh } = await useLazyFetch("/api/pengajar");
-
   const table = useTemplateRef("tableRef");
-
+  const user = useUser();
   const state = ref(getInitialFormData());
+  const daerahId = computed(() => state.value.daerahId);
+  const desaId = computed(() => state.value.desaId);
+  const { data, status, refresh } = await useLazyFetch("/api/pengajar");
+  const { data: dataDaerah } = await useLazyFetch("/api/daerah");
+  const { data: dataDesa } = await useFetch("/api/desa", {
+    query: {
+      daerahId,
+    },
+    immediate: false,
+  });
+  const { data: dataKelompok } = await useFetch("/api/kelompok", {
+    query: {
+      desaId,
+    },
+    immediate: false,
+  });
 
   const modalOpen = ref(false);
   const modalLoading = ref(false);
@@ -40,6 +56,15 @@
   function clickAdd() {
     state.value = getInitialFormData();
     modalOpen.value = true;
+    if (user.value!.role! > 1) {
+      state.value.daerahId = user.value?.daerahId;
+    }
+    if (user.value!.role! > 2) {
+      state.value.desaId = user.value?.desaId;
+    }
+    if (user.value!.role! > 3) {
+      state.value.kelompokId = user.value?.kelompokId;
+    }
   }
 
   async function clickDelete() {
@@ -63,6 +88,16 @@
   async function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
     modalOpen.value = true;
     state.value = itemData;
+  }
+
+  function disabledFunction() {
+    return (
+      (user.value?.role === 2 &&
+        user.value.daerahId !== state.value.daerahId) ||
+      (user.value?.role === 3 && user.value.desaId !== state.value.desaId) ||
+      (user.value?.role === 4 &&
+        user.value.kelompokId !== state.value.kelompokId)
+    );
   }
 </script>
 
@@ -92,13 +127,125 @@
           class="space-y-4"
           @submit="onSubmit"
         >
-          <div class="flex gap-4">
+          <div class="grid grid-cols-2 gap-4">
             <UFormGroup label="Nama Pengajar" name="nama" class="w-full">
-              <UInput v-model="state.nama" :disabled="modalLoading" />
+              <UInput
+                v-model="state.nama"
+                :disabled="modalLoading || disabledFunction()"
+              />
             </UFormGroup>
-
+            <UFormGroup label="Jenis Kelamin" name="gender" class="w-full">
+              <USelectMenu
+                v-model="state.gender"
+                placeholder="Pilih jenis kelamin"
+                :options="genderOptions"
+                option-attribute="name"
+                value-attribute="value"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
+            <UFormGroup label="No. Telepon" name="noTelepon" class="w-full">
+              <UInput
+                v-model="state.noTelepon"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
+            <UFormGroup label="Pendidikan" name="pendidikan" class="w-full">
+              <UInput
+                v-model="state.pendidikan"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
             <UFormGroup label="Status" name="status" class="w-full">
-              <UInput v-model="state.status" :disabled="modalLoading" />
+              <USelectMenu
+                v-model="state.status"
+                placeholder="Pilih status"
+                :options="statusOptions"
+                option-attribute="name"
+                value-attribute="value"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
+            <UFormGroup label="Tempat Lahir" name="tempatLahir" class="w-full">
+              <UInput
+                v-model="state.tempatLahir"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
+            <UFormGroup
+              label="Tanggal Lahir"
+              name="tanggalLahir"
+              class="w-full"
+            >
+              <UInput
+                v-model="state.tanggalLahir"
+                type="date"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
+            <UFormGroup
+              label="Tanggal Tugas"
+              name="tanggalTugas"
+              class="w-full"
+            >
+              <UInput
+                v-model="state.tanggalTugas"
+                type="date"
+                :disabled="modalLoading || disabledFunction()"
+              />
+            </UFormGroup>
+            <UFormGroup label="Daerah" name="daerahId" class="w-full">
+              <USelectMenu
+                v-model="state.daerahId!"
+                :disabled="
+                  !(user?.role! < 2) || modalLoading || disabledFunction()
+                "
+                placeholder="Masukkan nama daerah"
+                searchable-placeholder="Cari nama daerah"
+                :options="dataDaerah"
+                option-attribute="name"
+                value-attribute="id"
+                searchable
+                @change="
+                  state.desaId = undefined;
+                  state.kelompokId = undefined;
+                "
+              >
+                <template #empty> Opsi tidak ada </template>
+              </USelectMenu>
+            </UFormGroup>
+            <UFormGroup label="Desa" name="desaId" class="w-full">
+              <USelectMenu
+                v-model="state.desaId!"
+                :disabled="
+                  !(user?.role! < 3) || modalLoading || disabledFunction()
+                "
+                placeholder="Masukkan nama desa"
+                searchable-placeholder="Cari nama desa"
+                :options="dataDesa"
+                option-attribute="name"
+                value-attribute="id"
+                searchable
+                @change="state.kelompokId = undefined"
+              >
+                <template #empty> Opsi tidak ada </template>
+              </USelectMenu>
+            </UFormGroup>
+            <UFormGroup label="Kelompok" name="kelompokId" class="w-full">
+              <USelectMenu
+                v-model="state.kelompokId!"
+                :disabled="
+                  !(user?.role! < 4) || modalLoading || disabledFunction()
+                "
+                placeholder="Masukkan nama kelompok"
+                searchable-placeholder="Cari nama kelompok"
+                :options="dataKelompok"
+                option-attribute="name"
+                value-attribute="id"
+                searchable
+              >
+                <template #empty> Opsi tidak ada </template>
+              </USelectMenu>
             </UFormGroup>
           </div>
           <div class="flex w-full justify-end gap-2">
@@ -129,7 +276,7 @@
       }"
     >
       <h1 class="mb-2 text-xl font-bold text-red-500 underline">
-        # In Progress, do not use!
+        # Dalam periode testing, tolong laporkan bug & error!
       </h1>
 
       <div
@@ -145,6 +292,7 @@
             Tambah
           </UButton>
           <UButton
+            v-if="user?.role === 1"
             icon="i-heroicons-trash"
             variant="soft"
             class="gap-2 text-base text-black disabled:opacity-50 dark:text-white"
@@ -166,13 +314,24 @@
       </div>
       <AppTable
         ref="tableRef"
-        label="Kelola Pegajar"
+        label="Kelola Pengajar"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
-        :selectable="true"
+        :selectable="user?.role === 1"
         @edit-click="(e) => clickUpdate(e)"
-      />
+      >
+        <template #status-data="{ row }">
+          <div>
+            {{ statusOptions.find((item) => item.value == row.status)?.name }}
+          </div>
+        </template>
+        <template #gender-data="{ row }">
+          <div>
+            {{ genderOptions.find((item) => item.value == row.gender)?.name }}
+          </div>
+        </template>
+      </AppTable>
     </UCard>
   </main>
 </template>

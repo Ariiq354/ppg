@@ -1,4 +1,8 @@
-import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import {
+  relations,
+  type InferInsertModel,
+  type InferSelectModel,
+} from "drizzle-orm";
 import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { timestamp } from "./common";
 import { daerahTable, desaTable, kelompokTable } from "./tempat";
@@ -39,6 +43,20 @@ export const generusTable = sqliteTable("generus", {
   }),
   ...timestamp,
 });
+
+export const pengajarRelations = relations(pengajarTable, ({ one }) => ({
+  kelompok: one(kelompokTable, {
+    fields: [pengajarTable.kelompokId],
+    references: [kelompokTable.id],
+  }),
+}));
+
+export const generusRelations = relations(generusTable, ({ one }) => ({
+  kelompok: one(kelompokTable, {
+    fields: [generusTable.kelompokId],
+    references: [kelompokTable.id],
+  }),
+}));
 
 export type Pengajar = InferSelectModel<typeof pengajarTable>;
 export type NewPengajar = InferInsertModel<typeof pengajarTable>;

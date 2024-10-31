@@ -8,6 +8,9 @@ import {
 export async function getAllGenerus() {
   return await db.query.generusTable.findMany({
     orderBy: desc(generusTable.createdAt),
+    with: {
+      kelompok: true,
+    },
   });
 }
 
@@ -15,6 +18,9 @@ export async function getGenerusByDaerah(daerahId: number) {
   return await db.query.generusTable.findMany({
     where: eq(generusTable.daerahId, daerahId),
     orderBy: desc(generusTable.createdAt),
+    with: {
+      kelompok: true,
+    },
   });
 }
 
