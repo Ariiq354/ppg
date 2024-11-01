@@ -29,5 +29,5 @@ export default defineNuxtConfig({
     },
   },
 
-  // ignorePrefix: "_",
+  ignorePrefix: "_",
 });

@@ -13,6 +13,8 @@
     depth: number;
   }>();
 
+  const sidebarState = useSidebarToggle();
+
   const tabPadding = computed(() => {
     if (props.depth > 0) {
       return {
@@ -30,6 +32,7 @@
       v-if="!linkItem.children"
       class="flex w-full items-center gap-2 px-8 py-3 text-base transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-800"
       :to="linkItem.link"
+      @click="sidebarState = true"
     >
       <UIcon
         v-if="depth === 0"

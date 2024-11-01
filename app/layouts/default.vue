@@ -1,11 +1,7 @@
 <script setup lang="ts">
-  const sidebarOpenState = ref(true);
-
   const user = useUser();
 
-  function toggleSidebar() {
-    sidebarOpenState.value = !sidebarOpenState.value;
-  }
+  const sidebarState = useSidebarToggle();
 
   async function logout() {
     try {
@@ -22,12 +18,12 @@
 
 <template>
   <section class="flex">
-    <AppSidebar :sidebar-toggle="sidebarOpenState" />
+    <AppSidebar />
     <div
-      class="flex flex-1 flex-col overflow-auto p-8 transition-all duration-200"
-      :class="{ 'ml-72': sidebarOpenState }"
+      class="flex flex-1 flex-col overflow-auto p-4 transition-all duration-200 md:p-8"
+      :class="{ 'md:ml-72': sidebarState }"
     >
-      <AppTopbar :logout="logout" :toggle-sidebar="toggleSidebar" />
+      <AppTopbar :logout="logout" />
       <div>
         <slot />
       </div>

@@ -135,7 +135,7 @@
     <Title>Wilayah</Title>
     <UCard>
       <h1 class="mb-4 text-xl font-bold">Detail Wilayah</h1>
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
         <div
           class="flex flex-col gap-1 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
         >

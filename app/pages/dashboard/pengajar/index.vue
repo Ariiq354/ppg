@@ -127,7 +127,7 @@
           class="space-y-4"
           @submit="onSubmit"
         >
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <UFormGroup label="Nama Pengajar" name="nama" class="w-full">
               <UInput
                 v-model="state.nama"
@@ -280,13 +280,13 @@
       </h1>
 
       <div
-        class="mb-6 flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+        class="mb-6 flex items-center justify-between gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-700"
       >
         <div class="flex gap-2">
           <UButton
             icon="i-heroicons-plus"
             variant="soft"
-            class="gap-2 text-base text-black dark:text-white"
+            class="gap-2 text-xs text-black md:text-base dark:text-white"
             @click="clickAdd"
           >
             Tambah
@@ -295,7 +295,7 @@
             v-if="user?.role === 1"
             icon="i-heroicons-trash"
             variant="soft"
-            class="gap-2 text-base text-black disabled:opacity-50 dark:text-white"
+            class="gap-2 text-xs text-black disabled:opacity-50 md:text-base dark:text-white"
             :disabled="table ? table?.selected.length === 0 : true"
             @click="clickDelete"
           >
@@ -305,7 +305,7 @@
         <UButton
           icon="i-heroicons-arrow-up-tray"
           variant="soft"
-          class="gap-2 text-base text-black disabled:opacity-50 dark:text-white"
+          class="gap-2 text-xs text-black disabled:opacity-50 md:text-base dark:text-white"
           :disabled="!(data && data.length > 0)"
           @click="json2Csv(data!)"
         >

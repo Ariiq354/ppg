@@ -127,7 +127,7 @@
           class="space-y-4"
           @submit="onSubmit"
         >
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <UFormGroup label="Nama Generus" name="nama" class="w-full">
               <UInput
                 v-model="state.nama"
@@ -283,7 +283,7 @@
           <UButton
             icon="i-heroicons-plus"
             variant="soft"
-            class="gap-2 text-base text-black dark:text-white"
+            class="gap-2 text-xs text-black md:text-base dark:text-white"
             @click="clickAdd"
           >
             Tambah
@@ -292,7 +292,7 @@
             v-if="user?.role === 1"
             icon="i-heroicons-trash"
             variant="soft"
-            class="gap-2 text-base text-black disabled:opacity-50 dark:text-white"
+            class="gap-2 text-xs text-black disabled:opacity-50 md:text-base dark:text-white"
             :disabled="table ? table?.selected.length === 0 : true"
             @click="clickDelete"
           >
@@ -302,7 +302,7 @@
         <UButton
           icon="i-heroicons-arrow-up-tray"
           variant="soft"
-          class="gap-2 text-base text-black disabled:opacity-50 dark:text-white"
+          class="gap-2 text-xs text-black disabled:opacity-50 md:text-base dark:text-white"
           :disabled="!(data && data.length > 0)"
           @click="json2Csv(data!)"
         >

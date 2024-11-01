@@ -121,81 +121,80 @@
 </script>
 
 <template>
-  <div>
-    <div
-      class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700"
-    >
-      <h1>{{ label }}</h1>
-      <UInput
-        v-model="query"
-        icon="i-heroicons-magnifying-glass"
-        placeholder="Search..."
+  <div
+    class="flex flex-col justify-between gap-2 border-b border-gray-200 px-4 py-3 md:flex-row md:items-center dark:border-gray-700"
+  >
+    <h1>{{ label }}</h1>
+    <UInput
+      v-model="query"
+      icon="i-heroicons-magnifying-glass"
+      placeholder="Search..."
+    />
+  </div>
+  <UTable
+    v-if="selectable"
+    v-model="selected"
+    v-model:sort="sortRef"
+    :rows="pagedRows"
+    :columns="numberedColumn"
+    :loading="loading"
+    sort-mode="manual"
+    @select="select"
+  >
+    <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
+      <slot :name="name" v-bind="slotData ?? {}" />
+    </template>
+    <template #actions-data="{ row }">
+      <UButton
+        icon="i-heroicons-pencil-16-solid"
+        size="2xs"
+        variant="outline"
+        :ui="{ rounded: 'rounded-full' }"
+        square
+        aria-label="Edit item"
+        @click.stop="emit('editClick', removeRowNumber(row))"
       />
-    </div>
-    <UTable
-      v-if="selectable"
-      v-model="selected"
-      v-model:sort="sortRef"
-      :rows="pagedRows"
-      :columns="numberedColumn"
-      :loading="loading"
-      sort-mode="manual"
-      @select="select"
-    >
-      <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
-        <slot :name="name" v-bind="slotData ?? {}" />
-      </template>
-      <template #actions-data="{ row }">
-        <UButton
-          icon="i-heroicons-pencil-16-solid"
-          size="2xs"
-          variant="outline"
-          :ui="{ rounded: 'rounded-full' }"
-          square
-          @click.stop="emit('editClick', removeRowNumber(row))"
-        />
-      </template>
-    </UTable>
-    <UTable
-      v-else
-      v-model:sort="sortRef"
-      :rows="pagedRows"
-      :columns="numberedColumn"
-      :loading="loading"
-      sort-mode="manual"
-    >
-      <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
-        <slot :name="name" v-bind="slotData ?? {}" />
-      </template>
-      <template #actions-data="{ row }">
-        <UButton
-          icon="i-heroicons-pencil-16-solid"
-          size="2xs"
-          variant="outline"
-          :ui="{ rounded: 'rounded-full' }"
-          square
-          @click.stop="emit('editClick', removeRowNumber(row))"
-        />
-      </template>
-    </UTable>
-    <div
-      class="flex justify-end border-t border-gray-200 px-3 py-3.5 dark:border-gray-700"
-    >
-      <UPagination
-        v-model="page"
-        :page-count="pageCount"
-        :total="data ? data.length : 0"
-        :ui="{
-          wrapper: 'flex items-center gap-1',
-          base: 'w-8 h-8 justify-center',
-          rounded: '!rounded-full',
-          default: {
-            activeButton: {
-              variant: 'outline',
-            },
+    </template>
+  </UTable>
+  <UTable
+    v-else
+    v-model:sort="sortRef"
+    :rows="pagedRows"
+    :columns="numberedColumn"
+    :loading="loading"
+    sort-mode="manual"
+  >
+    <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
+      <slot :name="name" v-bind="slotData ?? {}" />
+    </template>
+    <template #actions-data="{ row }">
+      <UButton
+        icon="i-heroicons-pencil-16-solid"
+        size="2xs"
+        variant="outline"
+        :ui="{ rounded: 'rounded-full' }"
+        square
+        @click.stop="emit('editClick', removeRowNumber(row))"
+      />
+    </template>
+  </UTable>
+  <div
+    class="flex justify-end border-t border-gray-200 px-3 py-3.5 dark:border-gray-700"
+  >
+    <UPagination
+      v-model="page"
+      :page-count="pageCount"
+      :total="data ? data.length : 0"
+      :ui="{
+        wrapper: 'flex items-center gap-1',
+        base: 'w-8 h-8 justify-center',
+        rounded: '!rounded-full',
+        default: {
+          activeButton: {
+            variant: 'outline',
           },
-        }"
-      />
-    </div>
+        },
+      }"
+    />
   </div>
 </template>
